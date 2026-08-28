@@ -1,0 +1,11 @@
+import {complete,placeCorrect} from './helpers.js'
+
+const places=['hotel','office','airport','store','restaurant','factory','bank','conference center','train station','clinic']
+export const part3Conversations=Array.from({length:100},(_,index)=>{
+ const place=places[index%places.length],groupId=`p3_group_${index+1}`,time=8+(index%9),room=String.fromCharCode(65+index%5)
+ const sentences=[`Woman: Regarding booking ${300+index}, I expected the ${place} appointment at ${time}:00, but the schedule was changed.`,`Man: Actually, it will begin one hour later in Room ${room}.`,'Woman: Thanks. I will notify the other participants.']
+ const transcript=sentences.join(' '),transcriptTranslation=`Người phụ nữ dự kiến lịch hẹn tại ${place} lúc ${time} giờ, nhưng lịch đã đổi. Người đàn ông cho biết sự kiện bắt đầu muộn một giờ ở phòng ${room}. Người phụ nữ sẽ báo cho những người tham gia khác.`
+ const base=[['Why are the speakers talking?','Because a scheduled event has changed.','Họ nói chuyện vì một sự kiện đã đổi lịch.',sentences[0],['schedule changed','event moved']],['What time will the event begin?',`At ${time+1}:00.`,`Sự kiện bắt đầu lúc ${time+1} giờ.`,sentences[1],['one hour later',`${time+1}:00`]],['What will the woman probably do next?','Contact the other participants.','Người phụ nữ sẽ liên hệ những người tham gia khác.',sentences[2],['contact','notify']]]
+ return{groupId,transcript,translation:transcriptTranslation,questions:base.map((row,qIndex)=>{const placed=placeCorrect(row[1],['Cancel the entire event.','Order some office supplies.','Visit another building.'],index+qIndex);return complete({id:`p3_${index*3+qIndex+1}`,part:3,partKey:'part-3',theme:place,groupId,question:row[0],passage:'',options:placed.options,correctAnswer:placed.correctAnswer,speech:transcript,transcript,transcriptTranslation,vietnameseTranslation:row[2],evidenceSentence:row[3],paraphrases:[row[4],['participants','attendees']],explanation:'Thông tin xuất hiện theo thứ tự đầu–giữa–cuối; chú ý but và actually báo hiệu thay đổi.',fastTip:'💡 Đọc trước câu hỏi và săn WHO/WHEN/NEXT; đáp án thường paraphrase audio.'})})}
+})
+export const part3Questions=part3Conversations.flatMap(item=>item.questions)

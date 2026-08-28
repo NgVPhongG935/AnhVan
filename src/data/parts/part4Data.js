@@ -1,0 +1,11 @@
+import {complete,placeCorrect} from './helpers.js'
+
+const talkTypes=['flight announcement','voice message','weather report','store notice','museum tour','traffic update','company announcement','radio advertisement','event reminder','public service message']
+export const part4Talks=Array.from({length:100},(_,index)=>{
+ const type=talkTypes[index%talkTypes.length],groupId=`p4_group_${index+1}`,day=['Monday','Tuesday','Wednesday','Thursday','Friday'][index%5]
+ const sentences=[`This is a ${type} for service ${index+1}.`,`Please note that the service planned for ${day} will begin thirty minutes later than scheduled because of maintenance.`,'Customers may check the mobile application for updated information.']
+ const transcript=sentences.join(' '),transcriptTranslation=`Đây là ${type}. Dịch vụ dự kiến vào ${day} sẽ bắt đầu muộn 30 phút vì bảo trì. Khách hàng có thể kiểm tra ứng dụng di động để xem thông tin mới.`
+ const rows=[['What is the purpose of the talk?','To announce a schedule change.','Bài nói nhằm thông báo thay đổi lịch.',sentences[0],['talk purpose','announcement']],['Why will the service begin late?','Because of maintenance.','Dịch vụ bắt đầu muộn vì bảo trì.',sentences[1],['later than scheduled','delayed']],['Where can listeners find updates?','In a mobile application.','Người nghe xem cập nhật trên ứng dụng di động.',sentences[2],['updated information','updates']]]
+ return{groupId,transcript,translation:transcriptTranslation,questions:rows.map((row,qIndex)=>{const placed=placeCorrect(row[1],['At a ticket counter only.','Because attendance was low.','To introduce a new employee.'],index+qIndex);return complete({id:`p4_${index*3+qIndex+1}`,part:4,partKey:'part-4',theme:type,groupId,question:row[0],options:placed.options,correctAnswer:placed.correctAnswer,speech:transcript,transcript,transcriptTranslation,vietnameseTranslation:row[2],evidenceSentence:row[3],paraphrases:[row[4],['mobile application','app']],explanation:'Xác định loại bài nói ở đầu, nguyên nhân ở giữa và nguồn thông tin ở cuối.',fastTip:'💡 Ba câu hỏi chạy theo thứ tự đầu–giữa–cuối; nghe paraphrase thay vì chờ từ giống hệt.'})})}
+})
+export const part4Questions=part4Talks.flatMap(item=>item.questions)

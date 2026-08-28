@@ -1,0 +1,12 @@
+import {useMemo,useState} from 'react'
+import {ArrowLeft,Bookmark,BookOpen,Search,X} from 'lucide-react'
+import {cheatSheetSections,speakingWritingModule} from './fullToeicData'
+
+const KEY='toeic-cheat-bookmarks-v2'
+const readPins=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return[]}}
+export default function CheatSheetHub({onExit}){
+ const[query,setQuery]=useState(''),[active,setActive]=useState('all'),[pins,setPins]=useState(readPins)
+ const sections=useMemo(()=>cheatSheetSections.map(section=>({...section,tips:section.tips.filter(tip=>`${section.label} ${section.title} ${section.tags.join(' ')} ${tip}`.toLowerCase().includes(query.toLowerCase()))})).filter(section=>(active==='all'||section.id===active)&&section.tips.length),[query,active])
+ const toggle=id=>setPins(old=>{const next=old.includes(id)?old.filter(pin=>pin!==id):[...old,id];localStorage.setItem(KEY,JSON.stringify(next));return next})
+ return <main className="cheat-page"><header className="ecosystem-head"><button onClick={onExit}><ArrowLeft/> Trang chủ</button><div><span>BÁCH KHOA MẸO VÀNG</span><h1>Phản xạ 3 giây cho toàn bộ 7 Part</h1><p>Mẹo giúp loại trừ nhanh nhưng không phải cam kết “đúng 99%”; hãy kiểm tra ngữ cảnh khi còn thời gian.</p></div></header><div className="cheat-tools"><label><Search/><input value={query} onChange={event=>setQuery(event.target.value)} placeholder="Tìm being, Wh-, however, paraphrase..."/>{query&&<button onClick={()=>setQuery('')}><X/></button>}</label><nav><button className={active==='all'?'active':''} onClick={()=>setActive('all')}>Tất cả</button>{cheatSheetSections.map(section=><button key={section.id} className={active===section.id?'active':''} onClick={()=>setActive(section.id)}>{section.label}</button>)}</nav></div><section className="cheat-grid">{sections.map(section=><article key={section.id}><header><div><small>{section.skill}</small><h2>{section.label} · {section.title}</h2></div><BookOpen/></header>{section.tips.map((tip,i)=>{const id=`${section.id}-${i}`;return <div key={id} className={pins.includes(id)?'pinned':''}><b>{i+1}</b><p>{tip}</p><button title="Ghim mẹo" onClick={()=>toggle(id)}><Bookmark fill={pins.includes(id)?'currentColor':'none'}/></button></div>})}<footer>{section.tags.map(tag=><button key={tag} onClick={()=>setQuery(tag)}>{tag}</button>)}</footer></article>)}</section><section className="sw-cheat"><span>SPEAKING & WRITING 150+</span><h2>{speakingWritingModule.title}</h2>{speakingWritingModule.tips.map(tip=><p key={tip}>✓ {tip}</p>)}</section></main>
+}

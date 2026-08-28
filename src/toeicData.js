@@ -1,5 +1,6 @@
 import {dictionary,parts as coreParts,tipGroups} from './data'
 import {toeicStructure} from './toeicStructureData'
+import {legacyQuestionBank as fullBank} from './data/toeicData'
 
 export {dictionary,tipGroups}
 
@@ -41,6 +42,8 @@ export const parts=toeicStructure.map(meta=>{
 })
 
 export function getQuestionPool(partKey){
+ const aliases={'listening-1':'part-1','listening-2':'part-2','listening-3':'part-3','listening-4':'part-4','listening-3-4':'part-3','reading-word-form':'part-5','reading-connectors':'part-5','reading-pronouns':'part-5','reading-5':'part-5','reading-6':'part-6','reading-7':'part-7','reading-7-single':'part-7','reading-7-multiple':'part-7'}
+ if(aliases[partKey])return [...fullBank[aliases[partKey]]]
  const part=parts.find(item=>item.id===partKey)
  return part?.questions?[...part.questions]:[]
 }
@@ -100,3 +103,9 @@ const vocabRows=[
 
 export const vocabulary=vocabRows.map((row,index)=>({id:index+1,word:row[0],type:row[1],phonetic:row[2],meaning:row[3],example:row[4],translation:row[5]}))
 export const vocabularyGoal=600
+
+export {fullQuestionBank,studyModules,speakingWritingModule,cheatSheetSections} from './fullToeicData'
+
+export {linearStages,synonymPairs,speakingWritingQuestions,totalLinearQuestions} from './linearCourseData'
+
+export {part1Questions as part1QuestionPool} from './data/parts/part1Data.js'
