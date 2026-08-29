@@ -10,8 +10,8 @@ function LetterOptions({question,selected,onAnswer,hideText=false}){
 }
 
 export default function ListeningQuestion({question,groupEntries=[],answers={},onAnswer}){
- if(isP(question,1))return <section className="listening-format part1-format"><Part1Image src={question.imageUrl} image={question.image}/><AudioPlayer audioUrl={question.audioUrl} text={question.audioText||question.speech} canShowTranscript={false}/><LetterOptions question={question} selected={answers.current} onAnswer={onAnswer} hideText/></section>
- if(isP(question,2))return <section className="listening-format part2-format"><h1>🎧 Lắng nghe câu hỏi và chọn câu phản hồi phù hợp nhất</h1><AudioPlayer audioUrl={question.audioUrl} text={question.audioText||question.speech} canShowTranscript={false}/><LetterOptions question={question} selected={answers.current} onAnswer={onAnswer} hideText/></section>
+ if(isP(question,1))return <section className="listening-format part1-format"><Part1Image src={question.imageUrl} image={question.image}/><AudioPlayer audioUrl={question.audioUrl} text={question.audioText||question.speech} part1Options={question.options} canShowTranscript={false}/><LetterOptions question={question} selected={answers.current} onAnswer={onAnswer} hideText/></section>
+ if(isP(question,2))return <section className="listening-format part2-format"><h1>🎧 Lắng nghe câu hỏi và chọn câu phản hồi phù hợp nhất</h1><AudioPlayer audioUrl={question.audioUrl} text={question.audioText||question.speech} part1Options={question.options} canShowTranscript={false}/><LetterOptions question={question} selected={answers.current} onAnswer={onAnswer} hideText/></section>
  const entries=groupEntries.length?groupEntries:[{question,index:answers.currentIndex||0}]
  return <Part3Group part={isP(question,3)?'part-3':'part-4'} entries={entries} answers={answers} onAnswer={onAnswer}/>
 }
